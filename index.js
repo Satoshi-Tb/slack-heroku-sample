@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { App } = require('@slack/bolt');
+const { respondToSslCheck } = require('@slack/bolt/dist/receivers/ExpressReceiver');
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
@@ -51,12 +52,14 @@ app.command('/heroku-sample', async ({ack, say, command, logger}) => {
 });
 
 // アクション
-app.action('do_omikuji', async ({ack, body, logger, action, client}) => {
+app.action('do_omikuji', async ({ack, body, logger, action, respond, payload}) => {
     logger.info(`${action.name} start`)
     await ack();
 
     const message = `${body.user.name}さんの運勢は【${omikuji()}】です`;
-    await client.chat.update({
+    await respond({
+        response_type: 'in_channel',
+        replace_original: true,
         blocks: [
             {
                 type: 'section',
@@ -73,9 +76,9 @@ app.action('do_omikuji', async ({ack, body, logger, action, client}) => {
                     action_id: 'do_omikuji'
                 }
             }
-        ],
-        text: message
+        ]
     });
+
 });
 
 // アプリ起動
