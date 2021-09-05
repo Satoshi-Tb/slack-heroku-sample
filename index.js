@@ -47,6 +47,7 @@ app.command('/heroku-sample', async ({ack, say, command, logger}) => {
                 }
             }
         ],
+        
         text: message
     });
 });
@@ -68,13 +69,24 @@ app.action('do_omikuji', async ({ack, body, logger, action, respond, payload}) =
                     text: message
                 },
                 accessory: {
-                    type: 'button',
-                    text: {
-                        type: 'plain_text',
-                        text: 'もう一度引く'
-                    },
-                    action_id: 'do_omikuji'
+                    type: 'image',
+                    image_url: 'https://pbs.twimg.com/profile_images/625633822235693056/lNGUneLX_400x400.jpg',
+                    alt_text: 'cute cat'
                 }
+            },
+            {
+                type: 'actions',
+                elements: [
+                    {
+                        type: 'button',
+                        text: {
+                            type: 'plain_text',
+                            text: 'もう一度引く'
+                        },
+                        value: 'do_omikuji_999',
+                        action_id: 'do_omikuji'
+                    }
+                ]
             }
         ]
     });
