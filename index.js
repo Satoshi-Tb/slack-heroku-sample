@@ -51,10 +51,31 @@ app.command('/heroku-sample', async ({ack, say, command, logger}) => {
 });
 
 // アクション
-app.action('do_omikuji', async ({ack, body, say, logger, action}) => {
+app.action('do_omikuji', async ({ack, body, logger, action, client}) => {
     logger.info(`${action.name} start`)
     await ack();
-    await say(`${body.user.name}さんの運勢は【${omikuji()}】です`);
+
+    const message = `${body.user.name}さんの運勢は【${omikuji()}】です`;
+    await client.chat.update({
+        blocks: [
+            {
+                type: 'section',
+                text: {
+                    type: 'mrkdwn',
+                    text: message
+                },
+                accessory: {
+                    type: 'button',
+                    text: {
+                        type: 'plain_text',
+                        text: 'もう一度引く'
+                    },
+                    action_id: 'do_omikuji'
+                }
+            }
+        ],
+        text: message
+    });
 });
 
 // アプリ起動
